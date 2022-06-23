@@ -1,0 +1,66 @@
+version: "3.9"
+
+networks:
+  app-network:
+
+volumes:
+  db-volume:
+
+services:
+  db:
+    container_name: db
+    image: mysql
+    networks:
+      - app-network
+    volumes:
+      - "db-volume:/var/lib/mysql"
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: 1
+      MYSQL_DATABASE: "${DB_NAME}"
+      MYSQL_USER: "${DB_USER}"
+      MYSQL_PASSWORD: "${DB_PASSWORD}"
+    healthcheck:
+      test:
+        - CMD
+        - mysqladmin
+        - ping
+        - "-h"
+        - localhost
+      timeout: 20s
+      retries: 10
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
+    environment:
+      PMA_HOST: db
+      PMA_USER: "${DB_USER}"
+      PMA_PASSWORD: "${DB_PASSWORD}"
+  api:
+    container_name: api
+    image: "pbaudry/tp-api:latest"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
+    environment:
+      DB_HOST: db
+      DB_NAME: "${DB_NAME}"
+      DB_USER: "${DB_USER}"
+      DB_PASSWORD: "${DB_PASSWORD}"
+  nginx:
+    container_name: nginx
+    hostname: nginx
+    image: "pbaudry/tp-nginx:latest"
+    depends_on:
+      - api
+      - phpmyadmin
+    networks:
+      - app-network
+    ports:
+      - 80:80

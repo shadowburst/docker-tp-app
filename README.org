@@ -1,0 +1,40 @@
+#+TITLE: Docker - TP app
+
+La configuration nécessaire pour lancer le projet /tp-app/ avec Docker.
+
+* Sommaire :toc:
+- [[#prérequis][Prérequis]]
+- [[#installation][Installation]]
+- [[#lancement][Lancement]]
+- [[#utilisation][Utilisation]]
+
+* Prérequis
+- Git
+- Docker
+- ... Et c'est tout !
+
+* Installation
+- Dans un terminal, récupérer le projet
+#+begin_src bash
+git clone https://github.com/shadowburst/docker-tp-app
+cd docker-tp-app
+#+end_src
+
+- Configurer le fichier /.env/
+
+   Ce fichier contiendra les données sensibles de l'application. Pour simplifier la mise en place de nouvelles installations, un fichier a été inclu dans le projet avec des valeurs par défaut.
+
+* Lancement
+Pour lancer le projet, il faut se rendre dans son dossier racine et lancer :
+#+begin_src bash
+docker compose up -d
+#+end_src
+!! Le projet peut prendre du temps pour démarrer à cause des dépendances entre les différents services !!
+
+* Utilisation
+Les différents services du projet sont détaillés ci-dessous :
+
+| Service              | Route                       |
+|----------------------+-----------------------------|
+| API                  | http://localhost            |
+| phpmyadmin           | http://localhost/phpmyadmin |
